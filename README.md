@@ -1,2 +1,2 @@
-# K_means-in-C-
+# C++ K_means Algorithm 
 C++ Kmeans algorithme 
