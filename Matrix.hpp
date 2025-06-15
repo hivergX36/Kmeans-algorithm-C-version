@@ -3,32 +3,56 @@
 template<class m>
 class Matrix{
 
-    private: 
+    private:
 
     int row;
-    int col; 
-    m* matrix; 
+    int col;
+    m** matrix;
 
-    public: 
+    public:
 
 
 
     Matrix(int Rows, int Cols){
-        rows = Rows;
+        row = Rows;
         col = Cols;
-        matrix = new m[rows * cols];
+        matrix = new m*[row];
+        for(int i = 0;i < row; i++){
+            matrix[i] = new m[col];
+        }; 
+    
     };
 
 
     Matrix(int size){
-        rows = size;
+        row = size;
         col = size;
-        matrix = new m[rows * cols];
+        matrix = new m*[row];
+        for(int i = 0; i < row; i++){
+            matrix[i] = new m[col];
+        }
     };
 
     ~Matrix(){
-        delete matrix[];
+        delete matrix;
     };
 
 
-}
+    void display_matrix(){
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                std::cout << matrix[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    };
+
+    void set_matrix_value(int i, int j, int value){
+        matrix[i][j] = value;
+    }
+
+    void set_matrix_value(int i, int j, float value){
+        matrix[i][j] = value;
+    }
+
+};
