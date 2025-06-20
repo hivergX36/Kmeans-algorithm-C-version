@@ -6,11 +6,10 @@
 #include <math.h>
 #include <algorithm>
 
-
+// Réfléchir sur le cluster 
 struct Cluster{
 
-    int indexCluster;
-    int sizeofcentroid;
+int sizeofcentroid;
     int numberBelongingPoint;
     float intra_inertia;
     float * centroid_coordinate;
@@ -22,7 +21,7 @@ struct Cluster{
 
     Cluster(int sizeofcentroid){
         numberBelongingPoint = 0;
-        belongingPoints = new std::vector<std::vector<float>> ;
+        belongingPoints = new std::vector<std::vector<float>>;
         centroid_coordinate =  new float[sizeofcentroid];
 
 

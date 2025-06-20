@@ -9,20 +9,29 @@
 #include "Matrix.hpp"
 
 
-struct Kmean{
+class Kmean{
+
+    public class:
 
     int nbMatrixrows;
     int nbMatrixcols;
     int numberFeature;
-
-    Cluster *Centroids;
+    int featureSize;
+    int numberOfCluster;
+    float min;
+    float max; 
+    Cluster* Centroids;
     std::vector<float> * data_inertia;
-    Matrix<float>* pedictor;
+    Matrix<float>* predictor;
 
-    Kmean(int numberOfCluster, int numberFeature,std::string filename){
+    Kmean(int nbCluster, std::string filename){
         nbMatrixrows = 0;
         nbMatrixcols = 0;
-        pedictor = nullptr;
+        numberFeature = 0;
+        max = 0;
+        min = 2147483627; 
+        numberOfCluster = nbCluster;
+        predictor = nullptr;
         data_inertia = nullptr;
         Centroids = nullptr;
 
@@ -43,24 +52,76 @@ struct Kmean{
         else{
             file >> nbMatrixrows;
             file >> nbMatrixcols;
-            std::cout << "Les caractéristiques du problèmes sont: " << std::endl;
-            std::cout << "Nombre de lignes: " << nbMatrixrows << std::endl;
-            std::cout << "Nombre de colonnes: " << nbMatrixcols << std::endl;
+            featureSize = nbMatrixrows;
+            numberFeature = featureSize; 
 
-            pedictor = new Matrix<float>(nbMatrixrows, nbMatrixcols);
+
+            predictor = new Matrix<float>(nbMatrixrows, nbMatrixcols);
             for (int i = 0; i < nbMatrixrows; ++i) {
                 for (int j = 0; j < nbMatrixcols; ++j) {
+                
                     float value;
                     file >> value;
-                    pedictor->set_matrix_value(i, j, value);
+                    predictor->set_matrix_value(i, j, value);
+                    if value < min) {
+                        min = value;
+                    }
+                    if (value > max) {
+                        max = value;
+                    }
                 }
             }
+;
+
+            file.close();
 
 
 
         }
+    
+
+        std::cout << "Les caractéristiques du problèmes sont: " << std::endl;
+        std::cout << "Nombre de lignes: " << nbMatrixrows << std::endl;
+        std::cout << "Nombre de colonnes: " << nbMatrixcols << std::endl;
+        std::cout << "Le nombre de features est: " << numberFeature << std::endl;
+        std::cout << "Le nombre de cluster est: " << nbMatrixcols << std::endl;
+        std::cout << "La matrice de données est: " << std::endl;
+        predictor ->display_matrix();
 
 
     }
 
+
+    void normalize_data(){
+        /* Normalize the data in the matrix to a range of [0, 1] */
+        for (int i = 0; i < nbMatrixrows; ++i) {
+            for (int j = 0; j < nbMatrixcols; ++j) {
+                float value = predictor->get_matrix_value(i, j);
+                float normalized_value = (value - min) / (max - min);
+                predictor->set_matrix_value(i, j, normalized_value);
+            }
+        }
+    }
+    void denormalize_data(){
+        /* Denormalize data to return in the normal range */
+        for (int i = 0; i < nbMatrixrows; ++i) {
+            for (int j = 0; j < nbMatrixcols; ++j) {
+                float value = predictor->get_matrix_value(i, j);
+                float denormalized_value = value * (max - min) + min;
+                predictor->set_matrix_value(i, j, denormalized_value);
+            }
+        }
+    }
+
+    void generate_random_centroids(){
+        Centroids = new Cluster[numberOfCluster];
+        for (int i = 0; i < numberOfCluster; ++i) {
+            Centroids[i] = Cluster(featureSize);
+            for (int j = 0; j < featureSize; ++j) {
+                Centroids[i].centroid_coordinate[j] = rand() % max, j);
+            }
+        }
+    }
+
+   
 };
