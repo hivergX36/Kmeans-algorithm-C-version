@@ -55,4 +55,12 @@ class Matrix{
         matrix[i][j] = value;
     }
 
+    void get_matrix_row(int i){
+        float vector[col]
+        for(int j = 0; j < col; j++){
+            vector[j] = matrix[i][j];
+        }
+        return vector;
+    };
+
 };

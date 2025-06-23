@@ -118,7 +118,41 @@ class Kmean{
         for (int i = 0; i < numberOfCluster; ++i) {
             Centroids[i] = Cluster(featureSize);
             for (int j = 0; j < featureSize; ++j) {
-                Centroids[i].centroid_coordinate[j] = rand() % max, j);
+                Centroids[i].centroid_coordinate[j] = (double)std::rand() / (double)RAND_MAX;;
+            }
+        }
+    }
+
+    void calculate_and_assign(){
+        int min_index = 0;
+        float min_distance = 0.0;
+        for (int i = 0; i < nbMatrixrows; ++i) {
+            for (int j = 0; j < numberOfCluster; ++j) {
+                float distance = 0.0;
+                for (int k = 0; k < featureSize; ++k) {
+                    distance += pow(predictor->get_matrix_value(i, k) - Centroids[j].centroid_coordinate[k], 2);
+                }
+                distance = sqrt(distance);
+                
+                if (j == 0 || distance < min_distance) {
+                    min_distance = distance;
+                    min_index = j;
+                }
+            }
+            Centroids[min_index].belongingPoints->push_back(predictor->get_row(i));
+    }
+
+
+    void calculate_intra_inertia(){
+        for (int i = 0; i < numberOfCluster; i++) {
+            Centroids[i].intra_inertia = 0.0;
+            for (const auto &point : *Centroids[i].belongingPoints) {
+                float distance = 0.0;
+                for (int j = 0; j < featureSize; j++) {
+                    distance += pow(point[j] - Centroids[i].centroid_coordinate[j], 2);
+                }
+                distance = sqrt(distance);
+                Centroids[i].intra_inertia += distance;
             }
         }
     }

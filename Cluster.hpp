@@ -13,7 +13,7 @@ int sizeofcentroid;
     int numberBelongingPoint;
     float intra_inertia;
     float * centroid_coordinate;
-    std::vector<std::vector<float>> * belongingPoints;
+    std::vector<std::vector<float>>* belongingPoints;
 
 
    
@@ -21,8 +21,11 @@ int sizeofcentroid;
 
     Cluster(int sizeofcentroid){
         numberBelongingPoint = 0;
-        belongingPoints = new std::vector<std::vector<float>>;
         centroid_coordinate =  new float[sizeofcentroid];
+        belongingPoints = new std::vector<std::vector<float>>;
+
+
+    
 
 
   
