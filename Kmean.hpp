@@ -21,7 +21,7 @@ class Kmean{
     float min;
     float max; 
     Cluster* Centroids;
-    std::vector<float> * data_inertia;
+    std::vector<float> * sum_cluster_intra_inertia;
     Matrix<float>* predictor;
 
     Kmean(int nbCluster, std::string filename){
@@ -32,7 +32,7 @@ class Kmean{
         min = 2147483627; 
         numberOfCluster = nbCluster;
         predictor = nullptr;
-        data_inertia = nullptr;
+        sum_cluster_intra_inertia = new std::vector<float>;
         Centroids = nullptr;
 
     }
@@ -133,7 +133,6 @@ class Kmean{
                     distance += pow(predictor->get_matrix_value(i, k) - Centroids[j].centroid_coordinate[k], 2);
                 }
                 distance = sqrt(distance);
-                
                 if (j == 0 || distance < min_distance) {
                     min_distance = distance;
                     min_index = j;
@@ -157,5 +156,49 @@ class Kmean{
         }
     }
 
-   
+    void update_centroids(){
+        for (int i = 0; i < numberOfCluster; i++) {
+            if (Centroids[i].belongingPoints->size() < 1) continue; // Skip empty clusters
+            for (int j = 0; j < featureSize; j++) {
+                float coord_j = 0.0;
+                for (const auto &point : *Centroids[i].belongingPoints) {
+                    coord_j += point[j];
+                }
+                Centroids[i].centroid_coordinate[j] = coord_j / Centroids[i].belongingPoints->size();
+            }
+        }
+    }
+
+    void update_clusters(){
+        for (int i = 0; i < numberOfCluster; i++) {
+            Centroids[i].belongingPoints->clear();
+            Centroids[i].numberBelongingPoint = 0;
+        }
+    }
+
+    void update_inertia(){
+        float sum = 0.0;
+        for (int i = 0; i < numberOfCluster; i++) {
+            sum += Centroids[i].intra_inertia;
+        }
+        sum_cluster_intra_inertia->push_back(sum);
+    }
+
+
+    void stopping_criteria(float epsilon, int number_iterations, int max_iterations){
+        if(number_iterations >= max_iterations){
+            std::cout << "Maximum number of iterations reached." << std::endl;
+            return true;
+        }
+        if()
+
+        
+    }
+
+
+
+
+}
+
+
 };
