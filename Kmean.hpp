@@ -23,6 +23,7 @@ class Kmean{
     Cluster* Centroids;
     std::vector<float> * sum_cluster_intra_inertia;
     Matrix<float>* predictor;
+    bool stop; 
 
     Kmean(int nbCluster, std::string filename){
         nbMatrixrows = 0;
@@ -34,6 +35,7 @@ class Kmean{
         predictor = nullptr;
         sum_cluster_intra_inertia = new std::vector<float>;
         Centroids = nullptr;
+        stop = false; 
 
     }
 
@@ -142,7 +144,7 @@ class Kmean{
     }
 
 
-    void calculate_intra_inertia(){
+    void calculate_centroid_intra_inertia(){
         for (int i = 0; i < numberOfCluster; i++) {
             Centroids[i].intra_inertia = 0.0;
             for (const auto &point : *Centroids[i].belongingPoints) {
@@ -190,9 +192,39 @@ class Kmean{
             std::cout << "Maximum number of iterations reached." << std::endl;
             return true;
         }
-        if()
+        if(sum_cluster_intra_inertia->size() < 2){
+            std::cout << "Not enough data to calculate stopping criteria." << std::endl;
+            return false;
+        }
+
+        if(fabs((*sum_cluster_intra_inertia)[sum_cluster_intra_inertia->size() - 1] - (*sum_cluster_intra_inertia)[sum_cluster_intra_inertia->size() - 2]) < epsilon){
+            std::cout << "Stopping criteria met." << std::endl;
+            return true;
+        }
+
+        return false;
+
+
+
+
 
         
+    }
+
+
+    void run_kmeans(float epsilon, int max_iterations){
+        int number_iterations = 0;
+        generate_random_centroids();
+        while(!stop){
+            update_clusters();
+            calculate_and_assign();
+            calculate_centroid_intra_inertia();
+            update_centroids();
+            update_inertia();
+            stop = stopping_criteria(epsilon, number_iterations, max_iterations);
+            number_iterations++;
+        }
+        denormalize_data();
     }
 
 
